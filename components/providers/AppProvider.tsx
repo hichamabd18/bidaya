@@ -68,6 +68,8 @@ interface AppContextValue {
   setHabitDone: (id: string, done: boolean) => void;
   resetToday: () => DayRecord;
   restoreToday: (snapshot: DayRecord) => void;
+  /** إعادة قراءة كل الحالة من التخزين (بعد استعادة نسخة احتياطية) */
+  reloadFromStorage: () => void;
   week: WeekRecord;
   setWeeklyDone: (id: string, done: boolean) => void;
 
@@ -190,6 +192,15 @@ export function AppProvider({children}: {children: React.ReactNode}) {
     [persistDay],
   );
 
+  const reloadFromStorage = useCallback(() => {
+    const loaded = loadRawSettings();
+    loaded.location = coerceCoordinates(loaded.location, DEFAULT_LOCATION);
+    setSettings(loaded);
+    setDayState(getDay());
+    setWeekState(getWeek());
+    prune();
+  }, []);
+
   const setWeeklyDone = useCallback((id: string, done: boolean) => {
     setWeekState((prev) => {
       const next = {weekly: {...prev.weekly, [id]: done}};
@@ -279,6 +290,7 @@ export function AppProvider({children}: {children: React.ReactNode}) {
     setHabitDone,
     resetToday,
     restoreToday,
+    reloadFromStorage,
     week,
     setWeeklyDone,
     locate,

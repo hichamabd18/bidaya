@@ -4,8 +4,10 @@ import React, { useMemo, useState } from 'react';
 import { ArrowRight, Check, Compass, MapPin, Minus, Plus, Search, Volume2, VolumeX } from 'lucide-react';
 import { Sheet } from '@/components/ui/Sheet';
 import { Segmented } from '@/components/ui/controls';
+import { useToast } from '@/components/ui/Toast';
 import { useApp } from '@/components/providers/AppProvider';
 import { APP_METADATA } from '@/lib/data/meta';
+import { applyBackup, backupFileName, collectBackup } from '@/lib/backup';
 import { ALGERIAN_WILAYAS, MAJOR_ISLAMIC_CITIES } from '@/lib/prayer';
 import { normalizeAr } from '@/lib/search';
 import { cn } from '@/lib/utils';
@@ -54,6 +56,67 @@ export function SettingsSheet() {
         <LocationView onBack={() => setView('root')} />
       )}
     </Sheet>
+  );
+}
+
+/** تصدير السجل إلى ملف واستعادته على أي جهاز — بلا حسابات ولا خادم */
+function BackupSection() {
+  const { reloadFromStorage } = useApp();
+  const { show } = useToast();
+
+  const handleExport = () => {
+    const payload = collectBackup();
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = backupFileName();
+    anchor.click();
+    URL.revokeObjectURL(url);
+    show({ message: `صُدِّر السجل — ${Object.keys(payload.records).length} سجلًا` });
+  };
+
+  const handleImportFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = ''; // يسمح بإعادة اختيار الملف نفسه
+    if (!file) return;
+    const raw = await file.text();
+    const result = applyBackup(raw);
+    if (!result.ok) {
+      show({ message: result.error ?? 'فشلت الاستعادة', duration: 5000 });
+      return;
+    }
+    reloadFromStorage();
+    const parts = [
+      result.restored > 0 ? `استُعيد ${result.restored}` : null,
+      result.merged > 0 ? `دُمج ${result.merged}` : null,
+      result.skipped > 0 ? `تُجوهِل ${result.skipped} غير صالح` : null,
+    ].filter(Boolean);
+    show({ message: parts.length ? `تمت الاستعادة — ${parts.join('، ')}` : 'لا جديد في الملف', duration: 6000 });
+  };
+
+  return (
+    <div className="border-t border-hairline px-5 py-4">
+      <p className="text-body font-medium">نسخة احتياطية</p>
+      <p className="mt-0.5 text-caption leading-relaxed text-ink-3">
+        سجلك على جهازك — صدّره ملفًا واحتفظ به، واستعيده على أي جهاز. الاستعادة تُكمل ما ينقص ولا تحذف علاماتك الأحدث.
+      </p>
+      <div className="mt-2.5 flex gap-2">
+        <button type="button" onClick={handleExport} className="btn flex-1">
+          تصدير السجل
+        </button>
+        <label className="btn flex-1 cursor-pointer">
+          استعادة من ملف
+          <input
+            type="file"
+            accept="application/json,.json"
+            onChange={handleImportFile}
+            className="sr-only"
+            aria-label="اختيار ملف النسخة الاحتياطية"
+          />
+        </label>
+      </div>
+    </div>
   );
 }
 
@@ -169,6 +232,8 @@ function RootView({
           </button>
         </div>
       </Row>
+
+      <BackupSection />
 
       <div className="px-5 py-4">
         <a href="/offline.html" download="اليوم-النبوي-ووظائف-العام.html" className="btn w-full">

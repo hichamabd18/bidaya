@@ -4,6 +4,7 @@ import {dayKey, weekKey, monthKey, EMPTY_DAY, getDay, setDay} from '../lib/store
 import {normalizeAr, searchEntries} from '../lib/search.ts';
 import {coerceCoordinates, ALGERIAN_WILAYAS} from '../lib/prayer.ts';
 import {monthActId, contextualId, findLibraryEntry, libraryEntries} from '../lib/library.ts';
+import {collectBackup, applyBackup, backupFileName} from '../lib/backup.ts';
 
 let passed = 0;
 function check(name, fn) {
@@ -101,6 +102,76 @@ check('getDay/setDay على مفتاح مخصص', () => {
   // بيئة نود بلا localStorage: تُستخدم قيم فارغة دون انهيار
   const record = getDay('2099-01-01');
   assert.deepEqual(record.timeline, {});
+});
+
+console.log('— النسخة الاحتياطية —');
+
+// محاكاة localStorage ثم حقنها كـ window للوحدات التي تلمسه عند الاستدعاء
+function makeStorage() {
+  const map = new Map();
+  return {
+    get length() {
+      return map.size;
+    },
+    key: (i) => [...map.keys()][i] ?? null,
+    getItem: (k) => (map.has(k) ? map.get(k) : null),
+    setItem: (k, v) => map.set(k, String(v)),
+    removeItem: (k) => map.delete(k),
+    clear: () => map.clear(),
+  };
+}
+const storage = makeStorage();
+globalThis.window = {localStorage: storage};
+
+check('اسم ملف النسخة مبطن ومؤرّخ', () => {
+  assert.equal(backupFileName(new Date(2026, 8, 25)), 'bidaya-backup-2026-09-25.json');
+});
+check('التصدير من تخزين فارغ: لا سجلات', () => {
+  const payload = collectBackup();
+  assert.equal(payload.app, 'bidaya');
+  assert.equal(payload.schema, 1);
+  assert.equal(Object.keys(payload.records).length, 0);
+});
+check('دورة كاملة: تصدير ثم مسح ثم استعادة تعيد السجلات', () => {
+  storage.setItem('bidaya.v1:day:2026-09-25', JSON.stringify({timeline: {TL01_01: true}, habits: {}}));
+  storage.setItem('bidaya.v1:week:2026-W39', JSON.stringify({weekly: {'قراءة الكهف': true}}));
+  const json = JSON.stringify(collectBackup());
+  storage.clear();
+  const result = applyBackup(json);
+  assert.equal(result.ok, true, result.error);
+  assert.equal(result.restored, 2);
+  assert.equal(JSON.parse(storage.getItem('bidaya.v1:day:2026-09-25')).timeline.TL01_01, true);
+});
+check('الدمج: العلامات تتحد وحالة الجهاز الأحدث تفوز', () => {
+  storage.clear();
+  storage.setItem('bidaya.v1:day:2026-09-25', JSON.stringify({timeline: {TL01_01: false, TL02_01: true}, habits: {}}));
+  const backup = {
+    app: 'bidaya', schema: 1, appVersion: '3.0.0', exportedAt: '2026-09-24T00:00:00Z',
+    records: {'day:2026-09-25': {timeline: {TL01_01: true, TL03_01: true}, habits: {}}},
+  };
+  const result = applyBackup(JSON.stringify(backup));
+  assert.equal(result.ok, true);
+  assert.equal(result.merged, 1);
+  const day = JSON.parse(storage.getItem('bidaya.v1:day:2026-09-25'));
+  assert.equal(day.timeline.TL01_01, false, 'أحدث حالة على الجهاز يجب أن تبقى');
+  assert.equal(day.timeline.TL02_01, true);
+  assert.equal(day.timeline.TL03_01, true, 'علامة النسخة الغائبة على الجهاز تُستعاد');
+});
+check('ملف غير سليم أو غريب يُرفض بلطف', () => {
+  assert.equal(applyBackup('ليس json').ok, false);
+  assert.equal(applyBackup('{"app":"other","schema":1,"records":{}}').ok, false);
+  assert.equal(applyBackup('{"app":"bidaya","schema":9,"records":{}}').ok, false);
+});
+check('مفاتيح غريبة تُتجاهل لا تُكتب', () => {
+  storage.clear();
+  const evil = {
+    app: 'bidaya', schema: 1, appVersion: '3.0.0', exportedAt: 'x',
+    records: {'settings__proto__': {admin: true}, 'day:9999-99-99': {}, 'week:2026-W39': {weekly: {}}},
+  };
+  const result = applyBackup(JSON.stringify(evil));
+  assert.ok(result.skipped >= 2);
+  assert.equal(storage.getItem('bidaya.v1:settings__proto__'), null);
+  assert.equal(result.restored, 1); // الأسبوع الصالح فقط
 });
 
 if (process.exitCode) {
