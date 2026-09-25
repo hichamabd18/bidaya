@@ -1,0 +1,482 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap");
+
+:root {
+  /* الألوان — الوضع النهاري (ورق/رَق) */
+  --bg-page: #f6f1e7;
+  --bg-surface: #fbf8f2;
+  --bg-surface-raised: #ffffff;
+
+  --ink-primary: #2b2a25;
+  --ink-secondary: #6b6558;
+  --ink-muted: #9c9484;
+
+  --border-hairline: #e4dcc9;
+  --border-strong: #d2c7ac;
+
+  --accent: #a97c34;       /* بريق نحاسي هادئ — للحالة النشطة فقط */
+  --accent-soft: #f0e3c8;  /* خلفية اللحظة البطلة */
+  --accent-ink: #6e4e1e;   /* نص فوق accent-soft */
+
+  --success: #6e7f4f;
+  --success-soft: #e7ebdb;
+  --success-ink: #47532f;
+
+  --danger: #a24a3d;
+  --danger-soft: #f3ded9;
+
+  /* الطباعة */
+  --font-display: "Amiri", "Traditional Arabic", serif;
+  --font-ui: "IBM Plex Sans Arabic", "Cairo", sans-serif;
+
+  --text-hero: 34px;
+  --text-title: 19px;
+  --text-body: 15px;
+  --text-label: 13px;
+  --text-caption: 11px;
+
+  --radius-sm: 8px;
+  --radius-lg: 18px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --shadow-hero: 0 1px 2px rgba(43, 42, 37, 0.06);
+}
+
+/* الوضع الليلي — أضيفي data-theme="night" على <html> أو <body> */
+[data-theme="night"], .dark {
+  --bg-page: #12161d;
+  --bg-surface: #1a1f28;
+  --bg-surface-raised: #1f2530;
+
+  --ink-primary: #edeae1;
+  --ink-secondary: #a6a08f;
+  --ink-muted: #726c5d;
+
+  --border-hairline: #2a3140;
+  --border-strong: #3a4254;
+
+  --accent: #d4af6a;
+  --accent-soft: #332e1c;
+  --accent-ink: #e8c98a;
+
+  --success: #93a972;
+  --success-soft: #263020;
+  --success-ink: #b7cb98;
+
+  --danger: #c97a6a;
+  --danger-soft: #33221e;
+
+  --shadow-hero: none;
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+    background: var(--bg-page);
+    color: var(--ink-primary);
+  }
+
+  body {
+    font-family: var(--font-ui);
+    font-size: var(--text-body);
+    line-height: 1.7;
+    background: var(--bg-page);
+    color: var(--ink-primary);
+    touch-action: manipulation;
+  }
+
+  .font-amiri {
+    font-family: var(--font-display);
+  }
+
+  .font-ui {
+    font-family: var(--font-ui);
+  }
+}
+
+/* Tabular numbers */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   اللحظة البطلة — الصلاة القادمة
+   ============================================================ */
+
+.hero-prayer {
+  background: linear-gradient(135deg, var(--bg-surface-raised) 0%, var(--accent-soft) 100%);
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 4px 20px rgba(169, 124, 52, 0.08);
+  border: 1px solid var(--border-hairline);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="night"] .hero-prayer, .dark .hero-prayer {
+  background: linear-gradient(135deg, var(--bg-surface-raised) 0%, #252219 100%);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+.hero-prayer__label {
+  font-size: var(--text-label);
+  color: var(--accent-ink);
+  font-weight: 500;
+}
+
+.hero-prayer__time {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 6vw, 38px);
+  font-weight: 700;
+  color: var(--accent-ink);
+  line-height: 1.15;
+}
+
+/* ============================================================
+   شريط أوقات الصلاة
+   ============================================================ */
+
+.time-strip {
+  scrollbar-width: none;
+}
+
+.time-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.time-pill {
+  padding: 10px 8px;
+  border-radius: 12px;
+  border: 1px solid var(--border-hairline);
+  background: var(--bg-surface-raised);
+  text-align: center;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.time-pill--current {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(169, 124, 52, 0.14);
+}
+
+.time-pill__name {
+  display: block;
+  font-size: var(--text-caption);
+  color: var(--ink-secondary);
+  margin-block-end: 2px;
+}
+
+.time-pill--current .time-pill__name {
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+
+.time-pill__value {
+  font-size: var(--text-label);
+  font-weight: 600;
+  color: var(--ink-primary);
+}
+
+.time-pill--current .time-pill__value {
+  color: var(--accent-ink);
+}
+
+/* ============================================================
+   شريط التقدم اليومي
+   ============================================================ */
+
+.progress-track {
+  height: 6px;
+  background: var(--border-hairline);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+/* ============================================================
+   قوائم السنن — صفوف بخطوط فاصلة، ليست بطاقات متكررة
+   ============================================================ */
+
+.row-list {
+  border-block-start: 1px solid var(--border-hairline);
+}
+
+.row-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-1);
+  border-block-end: 1px solid var(--border-hairline);
+  transition: background-color 0.15s ease;
+}
+
+.row-item:hover {
+  background: rgba(169, 124, 52, 0.03);
+}
+
+.row-item__check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+  cursor: pointer;
+  background: transparent;
+  transition: all 0.2s ease;
+}
+
+.row-item__check:active {
+  transform: scale(0.9);
+}
+
+.row-item__check--done {
+  border-color: var(--success);
+  background: var(--success);
+  color: #ffffff;
+}
+
+.row-item__body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.row-item__title {
+  font-size: var(--text-body);
+  font-weight: 500;
+  color: var(--ink-primary);
+  line-height: 1.4;
+}
+
+.row-item__title--done {
+  text-decoration: line-through;
+  color: var(--ink-muted);
+}
+
+.row-item__meta {
+  font-size: var(--text-caption);
+  color: var(--ink-secondary);
+  line-height: 1.5;
+}
+
+/* ============================================================
+   الأزرار — زر تعبئة واحد كحد أقصى في كل شاشة
+   ============================================================ */
+
+.btn {
+  font-family: var(--font-ui);
+  font-size: var(--text-body);
+  font-weight: 500;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--ink-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  transition: all 0.15s ease;
+}
+
+.btn-icon {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  min-height: 34px;
+  padding: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid var(--border-hairline);
+  background: var(--bg-surface-raised);
+  color: var(--ink-secondary);
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+}
+
+.btn-icon:hover {
+  border-color: var(--accent);
+  color: var(--accent-ink);
+  background: var(--accent-soft);
+}
+
+.btn-icon:active {
+  transform: scale(0.92);
+}
+
+.btn-icon svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.btn-close {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  min-height: 34px;
+  padding: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid var(--border-hairline);
+  background: var(--bg-surface);
+  color: var(--ink-secondary);
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+}
+
+.btn-close:hover {
+  border-color: var(--accent);
+  color: var(--accent-ink);
+  background: var(--accent-soft);
+  transform: scale(1.05);
+}
+
+.btn-close:active {
+  transform: scale(0.92);
+}
+
+.btn-close svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+  flex-shrink: 0;
+  display: block;
+}
+
+.btn:hover {
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg-surface-raised);
+}
+
+.btn--primary:hover {
+  opacity: 0.92;
+  color: var(--bg-surface-raised);
+}
+
+/* ============================================================
+   شريط التنقل السفلي
+   ============================================================ */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background: rgba(251, 248, 242, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-block-start: 1px solid var(--border-hairline);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+}
+
+[data-theme="night"] .bottom-nav, .dark .bottom-nav {
+  background: rgba(26, 31, 40, 0.94);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.35);
+}
+
+.nav-icon {
+  color: var(--ink-secondary);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  min-width: 48px;
+  border-radius: 10px;
+}
+
+.nav-icon:active {
+  transform: scale(0.94);
+}
+
+.nav-icon--active {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ============================================================
+   شارات الحالة
+   ============================================================ */
+
+.badge {
+  display: inline-block;
+  font-size: var(--text-caption);
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.badge--success {
+  background: var(--success-soft);
+  color: var(--success-ink);
+}
+
+.badge--accent {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+/* Safe area support for notched phones */
+.pb-safe {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4.5rem);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+
