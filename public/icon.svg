@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <rect width="512" height="512" rx="108" fill="#f6f1e7"/>
-  <rect x="24" y="24" width="464" height="464" rx="90" fill="#fbf8f2" stroke="#d2c7ac" stroke-width="4"/>
-  <circle cx="256" cy="256" r="160" fill="#f0e3c8" stroke="#a97c34" stroke-width="3"/>
-  <!-- Elegant Crescent and Star -->
-  <path d="M 280 140 A 120 120 0 1 0 380 340 A 140 140 0 1 1 280 140 Z" fill="#a97c34"/>
-  <polygon points="360,180 372,210 405,212 379,232 388,264 360,245 332,264 341,232 315,212 348,210" fill="#a97c34"/>
+  <!-- «رقّ» — هلال نحاسي هادئ على ورق دافئ -->
+  <rect width="512" height="512" rx="112" fill="#f6f1e7"/>
+  <rect x="30" y="30" width="452" height="452" rx="86" fill="none" stroke="#e0d7c2" stroke-width="6"/>
+  <circle cx="248" cy="256" r="118" fill="#a97c34"/>
+  <circle cx="288" cy="232" r="102" fill="#f6f1e7"/>
+  <circle cx="322" cy="322" r="15" fill="#a97c34"/>
 </svg>
