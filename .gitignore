@@ -5,3 +5,9 @@ coverage/
 *.log
 .env*
 !.env.example
+
+*.tsbuildinfo
+next-env.d.ts
+
+# النسخة المستقلة — مولَّدة (npm run offline / prebuild)
+public/offline.html

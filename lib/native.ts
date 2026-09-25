@@ -1,38 +1,31 @@
-// Web Native APIs integration: WakeLock, Web Share, Haptics, and PWA Utilities
+// واجهات المتصفح الأصلية: قفل الشاشة، المشاركة، كشف iOS — مُنمَّطة بالكامل.
 
-let wakeLockSentinel: any = null;
+interface NavigatorStandalone extends Navigator {
+  standalone?: boolean;
+}
 
-/**
- * Request Screen Wake Lock to keep display on during devotional routines
- */
+let wakeLockSentinel: WakeLockSentinel | null = null;
+
+/** إبقاء الشاشة مضاءة أثناء الورد اليومي أو التسبيح */
 export async function requestWakeLock(): Promise<boolean> {
-  if (typeof window === 'undefined' || !('wakeLock' in navigator)) {
-    return false;
-  }
+  if (typeof navigator === 'undefined' || !('wakeLock' in navigator)) return false;
   try {
-    wakeLockSentinel = await (navigator as any).wakeLock.request('screen');
+    wakeLockSentinel = await navigator.wakeLock.request('screen');
     wakeLockSentinel.addEventListener('release', () => {
       wakeLockSentinel = null;
     });
     return true;
   } catch {
-    // Wake Lock may fail if battery saver is on or document is hidden
-    return false;
+    return false; // وضع توفير الطاقة أو الإخفاء
   }
 }
 
-/**
- * Release active screen wake lock
- */
 export async function releaseWakeLock(): Promise<void> {
-  if (wakeLockSentinel) {
-    try {
-      await wakeLockSentinel.release();
-    } catch {
-      // Ignore
-    }
-    wakeLockSentinel = null;
-  }
+  if (!wakeLockSentinel) return;
+  try {
+    await wakeLockSentinel.release();
+  } catch {}
+  wakeLockSentinel = null;
 }
 
 export interface ShareDataPayload {
@@ -43,35 +36,33 @@ export interface ShareDataPayload {
   source?: string;
 }
 
-/**
- * Native Web Share API with automatic clipboard fallback
- */
-export async function shareDevotionalContent(data: ShareDataPayload): Promise<'shared' | 'copied' | 'failed'> {
-  const formattedText = [
-    `✨ ${data.title}`,
+function formatShareText(data: ShareDataPayload): string {
+  return [
+    `${data.title}`,
     data.text ? `\n« ${data.text} »` : '',
-    data.reward ? `\n🌿 الفضل: ${data.reward}` : '',
-    data.facet ? `\n🤍 المقصد التربوي: ${data.facet}` : '',
-    data.source ? `\n📖 المصدر: ${data.source}` : '',
-    `\n— من تطبيق «اليوم النبوي ووظائف العام»`
-  ].filter(Boolean).join('\n');
+    data.reward ? `\nالفضل: ${data.reward}` : '',
+    data.facet ? `\nالمقصد التربوي: ${data.facet}` : '',
+    data.source ? `\nالإسناد: ${data.source}` : '',
+    `\n— من تطبيق «اليوم النبوي ووظائف العام»`,
+  ]
+    .filter(Boolean)
+    .join('\n');
+}
+
+/** مشاركة أصلية مع سقوط تلقائي إلى الحافظة */
+export async function shareDevotionalContent(data: ShareDataPayload): Promise<'shared' | 'copied' | 'failed'> {
+  const formattedText = formatShareText(data);
 
   if (typeof navigator !== 'undefined' && 'share' in navigator) {
     try {
-      await navigator.share({
-        title: data.title,
-        text: formattedText,
-      });
+      await navigator.share({title: data.title, text: formattedText});
       return 'shared';
-    } catch (err: any) {
-      if (err.name === 'AbortError') {
-        return 'failed';
-      }
-      // If user aborted or share failed, fallback to clipboard
+    } catch (err) {
+      if (err instanceof Error && err.name === 'AbortError') return 'failed';
+      // فشل المشاركة → نسخ
     }
   }
 
-  // Fallback to Clipboard API
   if (typeof navigator !== 'undefined' && navigator.clipboard) {
     try {
       await navigator.clipboard.writeText(formattedText);
@@ -84,13 +75,22 @@ export async function shareDevotionalContent(data: ShareDataPayload): Promise<'s
   return 'failed';
 }
 
-/**
- * Check if the browser is running on iOS Safari outside standalone mode
- */
+/** نسخ نص قصير مع معالجة فشل الحافظة */
+export async function copyText(text: string): Promise<boolean> {
+  if (typeof navigator === 'undefined' || !navigator.clipboard) return false;
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** iOS Safari داخل المتصفح (وليس مثبتًا) */
 export function isIOSSafariWeb(): boolean {
   if (typeof window === 'undefined') return false;
   const ua = window.navigator.userAgent;
-  const isIOS = /iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream;
-  const isStandalone = (window.navigator as any).standalone === true;
+  const isIOS = /iPad|iPhone|iPod/.test(ua) && !('MSStream' in window);
+  const isStandalone = (window.navigator as NavigatorStandalone).standalone === true;
   return isIOS && !isStandalone;
 }
