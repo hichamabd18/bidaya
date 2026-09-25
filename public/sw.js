@@ -1,55 +1,75 @@
-// Offline Cache Service Worker for "اليوم النبوي ووظائف العام"
-const CACHE_NAME = 'prophetic-day-v2.1';
-const ASSETS_TO_CACHE = [
-  '/',
-  '/manifest.json',
-  '/icon.svg',
-];
+// عامل الخدمة — استراتيجية صادقة:
+// - التنقلات: الشبكة أولًا مع سقوط للخارج عند انقطاع الاتصال (لا صفحات قديمة بعد النشر)
+// - حزم _next/static غير قابلة للتغيير: الخزن أولًا
+// - البقية: قديم-مع-إعادة-تحقق
+const VERSION = 'bidaya-v3';
+const PRECACHE = ['/', '/manifest.json', '/icon.svg'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    }).then(() => self.skipWaiting())
+    caches.open(VERSION).then((cache) =>
+      Promise.allSettled(PRECACHE.map((url) => cache.add(url))),
+    ).then(() => self.skipWaiting()),
   );
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((key) => key !== VERSION).map((key) => caches.delete(key))),
+    ).then(() => self.clients.claim()),
   );
 });
 
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
+  const { request } = event;
+  if (request.method !== 'GET') return;
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return;
+
+  // التنقلات — الشبكة أولًا
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(VERSION).then((cache) => cache.put('/', copy)).catch(() => {});
+          return response;
+        })
+        .catch(() => caches.match(request).then((cached) => cached || caches.match('/'))),
+    );
+    return;
+  }
+
+  // الأصول غير القابلة للتغيير — الخزن أولًا
+  if (url.pathname.startsWith('/_next/static/')) {
+    event.respondWith(
+      caches.match(request).then(
+        (cached) =>
+          cached ||
+          fetch(request).then((response) => {
+            const copy = response.clone();
+            caches.open(VERSION).then((cache) => cache.put(request, copy)).catch(() => {});
+            return response;
+          }),
+      ),
+    );
+    return;
+  }
+
+  // البقية — قديم-مع-إعادة-تحقق
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request).then((networkResponse) => {
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-          return networkResponse;
-        }
-        const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
-        return networkResponse;
-      }).catch(() => {
-        // Return cached root on navigation offline
-        if (event.request.mode === 'navigate') {
-          return caches.match('/');
-        }
-      });
-    })
+    caches.match(request).then((cached) => {
+      const network = fetch(request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const copy = response.clone();
+            caches.open(VERSION).then((cache) => cache.put(request, copy)).catch(() => {});
+          }
+          return response;
+        })
+        .catch(() => cached);
+      return cached || network;
+    }),
   );
 });

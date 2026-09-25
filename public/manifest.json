@@ -1,20 +1,29 @@
 {
+  "id": "/",
   "name": "اليوم النبوي ووظائف العام",
   "short_name": "اليوم النبوي",
   "description": "الدليل الشامل للاقتداء والتعبد وتزكية النفس وفق السنن النبوية الشريفة ووظائف مواسم العام ومتتبع العادات الإيمانية",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#f6f1e7",
-  "theme_color": "#a97c34",
+  "theme_color": "#f6f1e7",
   "dir": "rtl",
   "lang": "ar",
+  "categories": ["lifestyle", "education", "books"],
   "icons": [
     {
       "src": "/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ]
 }
