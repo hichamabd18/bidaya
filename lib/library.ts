@@ -1,9 +1,9 @@
 // نموذج «المكتبة» — معرّفات ثابتة لمقالات المحتوى (توجيه، بحث، توليد ساكن).
 // المحتوى نفسه لا يُغيَّر؛ تُبنى المعرّفات من مواضع ثابتة في البيانات.
 
-import { MODULE_2_HIJRI_SEASONS } from '@/lib/data/seasons';
-import { MODULE_3_CONTEXTUAL } from '@/lib/data/contextual';
-import { MODULE_4_SOUL_RULES, MODULE_4_DHIKR_RULES } from '@/lib/data/rules';
+import { MODULE_2_HIJRI_SEASONS } from './data/seasons.ts';
+import { MODULE_3_CONTEXTUAL } from './data/contextual.ts';
+import { MODULE_4_SOUL_RULES, MODULE_4_DHIKR_RULES } from './data/rules.ts';
 
 export type LibraryKind = 'month' | 'ctx' | 'soul' | 'dhikr';
 

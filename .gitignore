@@ -8,3 +8,6 @@ coverage/
 
 *.tsbuildinfo
 next-env.d.ts
+
+# النسخة المستقلة — مولَّدة (npm run offline / prebuild)
+public/offline.html

@@ -171,7 +171,13 @@ function RootView({
       </Row>
 
       <div className="px-5 py-4">
-        <details className="group">
+        <a href="/offline.html" download="اليوم-النبوي-ووظائف-العام.html" className="btn w-full">
+          تنزيل نسخة مستقلة تعمل دون اتصال (ملف واحد)
+        </a>
+        <p className="mt-2 text-caption leading-relaxed text-ink-3">
+          ملف HTML واحد يحوي كل المحتوى والمواقيت والمسبحة — يعمل من أي متصفح بلا إنترنت.
+        </p>
+        <details className="group mt-3">
           <summary className="cursor-pointer list-none text-label font-medium text-ink-2 transition-colors hover:text-ink">
             المصادر المعتمدة
             <span className="mr-1.5 inline-block transition-transform group-open:rotate-90" aria-hidden="true">

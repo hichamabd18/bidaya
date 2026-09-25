@@ -16,6 +16,7 @@ import './globals.css';
 import { AppProvider } from '@/components/providers/AppProvider';
 import { ToastProvider } from '@/components/ui/Toast';
 import { AppShell } from '@/components/shell/AppShell';
+import { Footer } from '@/components/shell/Footer';
 
 const APP_TITLE = 'اليوم النبوي ووظائف العام';
 const APP_DESCRIPTION =
@@ -41,10 +42,12 @@ export const metadata: Metadata = {
     description: APP_DESCRIPTION,
   },
   manifest: '/manifest.json',
-  icons: {
-    icon: [{ url: '/icon.svg', type: 'image/svg+xml' }],
-    apple: [{ url: '/apple-touch-icon.png' }],
-  },
+  icons: [
+    {url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png'},
+    {url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png'},
+    {url: '/icon.svg', type: 'image/svg+xml'},
+    {url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png'},
+  ],
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
