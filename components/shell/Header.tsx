@@ -4,16 +4,16 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {usePathname, useRouter} from 'next/navigation';
-import {CalendarDays, MapPin, Moon, BookOpen, Search, Settings, Sprout, Sun, Sunrise} from 'lucide-react';
+import {CalendarDays, MapPin, Moon, BookOpen, Search, Settings, ScrollText, Sun, Sunrise} from 'lucide-react';
 import {useApp} from '@/components/providers/AppProvider';
 import {useNow} from '@/lib/useNow';
 import {cn} from '@/lib/utils';
 
 export const NAV_ITEMS = [
   {href: '/', label: 'اليوم', icon: Sunrise},
+  {href: '/progress', label: 'صحيفتي', icon: ScrollText},
   {href: '/seasons', label: 'المواسم', icon: CalendarDays},
   {href: '/library', label: 'الجامع', icon: BookOpen},
-  {href: '/progress', label: 'تقدمي', icon: Sprout},
 ] as const;
 
 function formatCountdown(ms: number): string {

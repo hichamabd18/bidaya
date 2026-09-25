@@ -59,8 +59,8 @@ const html = `<!DOCTYPE html>
   <div class="tabs" role="tablist" aria-label="الأقسام">
     <button class="tab" role="tab" data-tab="today" aria-selected="true">اليوم</button>
     <button class="tab" role="tab" data-tab="seasons" aria-selected="false">المواسم</button>
-    <button class="tab" role="tab" data-tab="library" aria-selected="false">المكتبة</button>
-    <button class="tab" role="tab" data-tab="tasbeeh" aria-selected="false">المسبحة</button>
+    <button class="tab" role="tab" data-tab="library" aria-selected="false">الجامع</button>
+    <button class="tab" role="tab" data-tab="tasbeeh" aria-selected="false">السبحة</button>
   </div>
 </header>
 

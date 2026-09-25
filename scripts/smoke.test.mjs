@@ -83,13 +83,13 @@ try {
     assert2(body.includes('ابن رجب'), 'نسبة المصدر مفقودة');
   });
 
-  await check('المكتبة: الفهرس والمجموعات', async () => {
+  await check('الجامع: الفهرس والمجموعات', async () => {
     const {status, body} = await get('/library');
     assert2(status === 200);
     assert2(body.includes('فقه الأذكار') || body.includes('أصول سياسة النفس'), 'مجموعات المكتبة مفقودة');
   });
 
-  await check('تقدمي: الصحيفة والسجل', async () => {
+  await check('صحيفتي: الصحيفة والسجل', async () => {
     const {status, body} = await get('/progress');
     assert2(status === 200);
     assert2(body.includes('صحيفة اليوم'), 'عنوان الصحيفة مفقود');

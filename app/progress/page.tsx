@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { ProgressView } from '@/components/progress/ProgressView';
 
 export const metadata: Metadata = {
-  title: 'تقدمي',
+  title: 'صحيفتي',
   description: 'صحيفة الإنجاز اليومي والأسبوعي وسجل ثلاثين يومًا',
 };
 

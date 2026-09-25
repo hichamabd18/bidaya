@@ -5,6 +5,7 @@ import {normalizeAr, searchEntries} from '../lib/search.ts';
 import {coerceCoordinates, ALGERIAN_WILAYAS} from '../lib/prayer.ts';
 import {monthActId, contextualId, findLibraryEntry, libraryEntries} from '../lib/library.ts';
 import {collectBackup, applyBackup, backupFileName} from '../lib/backup.ts';
+import {HABIT_DAILY_INDICATORS} from '../lib/data/habits.ts';
 
 let passed = 0;
 function check(name, fn) {
@@ -135,6 +136,12 @@ check('getDay/setDay على مفتاح مخصص', () => {
   // بيئة نود بلا localStorage: تُستخدم قيم فارغة دون انهيار
   const record = getDay('2099-01-01');
   assert.deepEqual(record.timeline, {});
+});
+check('صحيفتي — تشتمل على ورد السنة النبوية وطلب العلم', () => {
+  assert.ok(HABIT_DAILY_INDICATORS.length >= 12);
+  const names = HABIT_DAILY_INDICATORS.map((h) => h.habit_name);
+  assert.ok(names.some((n) => n.includes('السنة النبوية')), 'ينقص ورد السنة النبوية');
+  assert.ok(names.some((n) => n.includes('طلب العلم')), 'ينقص طلب العلم الشرعي');
 });
 
 console.log('— النسخة الاحتياطية —');
