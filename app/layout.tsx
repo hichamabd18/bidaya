@@ -18,14 +18,14 @@ import { ToastProvider } from '@/components/ui/Toast';
 import { AppShell } from '@/components/shell/AppShell';
 import { Footer } from '@/components/shell/Footer';
 
-const APP_TITLE = 'اليوم النبوي ووظائف العام';
+const APP_TITLE = 'بداية الهداية';
 const APP_DESCRIPTION =
   'الدليل الشامل للاقتداء والتعبد وتزكية النفس وفق السنن النبوية الشريفة ووظائف مواسم العام ومتتبع العادات الإيمانية';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.APP_URL ?? 'http://localhost:3000'),
   title: {
-    default: `${APP_TITLE} — الدليل الشامل للاقتداء والتعبد`,
+    default: `${APP_TITLE} — الدليل الشامل للاقتداء والتعبد وتزكية النفس`,
     template: `%s · ${APP_TITLE}`,
   },
   description: APP_DESCRIPTION,
@@ -42,16 +42,22 @@ export const metadata: Metadata = {
     description: APP_DESCRIPTION,
   },
   manifest: '/manifest.json',
-  icons: [
-    {url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png'},
-    {url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png'},
-    {url: '/icon.svg', type: 'image/svg+xml'},
-    {url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png'},
-  ],
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon.png', sizes: '48x48', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'اليوم النبوي',
+    title: 'بداية الهداية',
   },
 };
 
@@ -68,7 +74,7 @@ export const viewport: Viewport = {
 /**
  * يُطبَّع المظهر قبل الترطيب — لا وميض أبيض لمستخدم الوضع الليلي.
  */
-const THEME_BOOT = `(function(){try{var s=localStorage.getItem('bidaya.v1:settings');var t=s?JSON.parse(s).theme:null;if(!t){t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'night':'day';}if(t==='night'){document.documentElement.setAttribute('data-theme','night');}document.documentElement.style.colorScheme=t==='night'?'dark':'light';}catch(e){}})();`;
+const THEME_BOOT = `(function(){try{var s=localStorage.getItem('bidaya.v1:settings');var t=s?JSON.parse(s).theme:null;if(!t){t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'night':'day';}if(t==='night'){document.documentElement.setAttribute('data-theme','night');}else{document.documentElement.removeAttribute('data-theme');}document.documentElement.style.colorScheme=t==='night'?'dark':'light';}catch(e){}})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

@@ -47,7 +47,8 @@
   color-scheme: light;
 }
 
-[data-theme='night'] {
+[data-theme='night'],
+html[data-theme='night'] {
   --page: #12161d;
   --surface: #191e26;
   --raised: #1f2530;
@@ -80,23 +81,28 @@
 
 /* ============================================================
    «فجر» — لَون الصفحة يتبع محطة اليوم (الأسطح ثابتة)
+   يُطبَّق تلوين النهار فقط عندما لا يكون الوضع الليلي مفعّلاً
    ============================================================ */
 
-html[data-daypart='dawn']       { --page: #f1efe9; }
-html[data-daypart='morning']    { --page: #f7f3e9; }
-html[data-daypart='noon']       { --page: #f6f1e7; }
-html[data-daypart='afternoon']  { --page: #f5eedd; }
-html[data-daypart='dusk']       { --page: #f2ebdc; }
-html[data-daypart='evening']    { --page: #efebdf; }
-html[data-daypart='night'],
-html[data-daypart='late']       { --page: #ece9dd; }
+html:not([data-theme='night'])[data-daypart='dawn']       { --page: #f1efe9; }
+html:not([data-theme='night'])[data-daypart='morning']    { --page: #f7f3e9; }
+html:not([data-theme='night'])[data-daypart='noon']       { --page: #f6f1e7; }
+html:not([data-theme='night'])[data-daypart='afternoon']  { --page: #f5eedd; }
+html:not([data-theme='night'])[data-daypart='dusk']       { --page: #f2ebdc; }
+html:not([data-theme='night'])[data-daypart='evening']    { --page: #efebdf; }
+html:not([data-theme='night'])[data-daypart='night'],
+html:not([data-theme='night'])[data-daypart='late']       { --page: #ece9dd; }
 
-html[data-theme='night'][data-daypart='dawn'] { --page: #121923; }
+/* درجات ليلية هادئة متباينة حسب المحطة — لا تعود أبدًا للون الفاتح */
+html[data-theme='night']                                 { --page: #12161d; }
+html[data-theme='night'][data-daypart='dawn']            { --page: #121923; }
+html[data-theme='night'][data-daypart='morning']         { --page: #141822; }
+html[data-theme='night'][data-daypart='noon']            { --page: #12161d; }
 html[data-theme='night'][data-daypart='afternoon'],
-html[data-theme='night'][data-daypart='dusk'] { --page: #14151c; }
-html[data-theme='night'][data-daypart='evening'] { --page: #121620; }
+html[data-theme='night'][data-daypart='dusk']            { --page: #14151c; }
+html[data-theme='night'][data-daypart='evening']         { --page: #121620; }
 html[data-theme='night'][data-daypart='night'],
-html[data-theme='night'][data-daypart='late']    { --page: #0f1319; }
+html[data-theme='night'][data-daypart='late']            { --page: #0f1319; }
 
 /* ============================================================
    ربط الرموز بأدوات Tailwind

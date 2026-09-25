@@ -39,7 +39,9 @@ export function AppShell({children}: {children: React.ReactNode}) {
       </a>
       <InstallBanner />
       <Header />
-      {children}
+      <main id="main" className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 md:px-8 pt-4 pb-32 md:pb-16 focus:outline-none">
+        {children}
+      </main>
       <BottomNav />
       <TasbeehFab />
       <TasbeehSheet />

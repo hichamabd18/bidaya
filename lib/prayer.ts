@@ -213,9 +213,9 @@ function computeSunAngleTime(angle: number, noon: number, lat: number, dec: numb
   return direction === 'ccw' ? noon - H : noon + H;
 }
 
-// العصر بمقدار ظل الجذر (مذهب الجمهور)
+// العصر بمقدار ظل الشاخص (مذهب الجمهور: قامة واحدة)
 function computeAsrTime(ratio: number, noon: number, lat: number, dec: number): number {
-  const angle = -deg(Math.atan(1 / (ratio + Math.tan(rad(Math.abs(lat - dec))))));
+  const angle = deg(Math.atan(1 / (ratio + Math.tan(rad(Math.abs(lat - dec))))));
   return computeSunAngleTime(angle, noon, lat, dec, 'cw');
 }
 

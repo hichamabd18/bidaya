@@ -86,12 +86,45 @@ check('coerceCoordinates يرمّم مدناً معروفة باسمها', () =>
   const fixed = coerceCoordinates(legacy, ALGERIAN_WILAYAS[0]);
   assert.equal(fixed.tzId, 'Africa/Cairo');
 });
-check('معرّفات المكتبة ثابتة وقابلة للعكس', () => {
+check('معرّفات المكتبة ثابتة وقابلة للعكس وشاملة لبداية الهداية وأعمال القلوب', () => {
   assert.equal(monthActId(3, 2), 'month-3-2');
   assert.equal(contextualId(0, 5), 'ctx-0-5');
   const entries = libraryEntries();
-  assert.ok(entries.length > 60, `entries=${entries.length}`);
-  assert.ok(findLibraryEntry(entries[0].id));
+  assert.ok(entries.length >= 100, `entries=${entries.length}`);
+
+  // تحقق من تفرد جميع المعرّفات
+  const ids = new Set();
+  for (const entry of entries) {
+    assert.ok(!ids.has(entry.id), `معرف مكرر: ${entry.id}`);
+    ids.add(entry.id);
+    assert.ok(entry.title && entry.title.trim().length > 0, `عنوان فارغ في: ${entry.id}`);
+    assert.ok(entry.group && entry.group.trim().length > 0, `مجموعة فارغة في: ${entry.id}`);
+    assert.ok(entry.sections && entry.sections.length > 0, `أقسام فارغة في: ${entry.id}`);
+    for (const sec of entry.sections) {
+      assert.ok(sec.label && sec.text, `قسم ناقص في: ${entry.id}`);
+    }
+  }
+
+  // تحقق من مواد بداية الهداية للإمام الغزالي
+  const bidayaTime = findLibraryEntry('bidayah-time-architecture');
+  assert.ok(bidayaTime, 'لم يتم العثور على عمارة الأوقات من بداية الهداية');
+  assert.equal(bidayaTime.kind, 'bidaya');
+  assert.ok(bidayaTime.source?.includes('بداية الهداية'));
+
+  const bidayaTongue = findLibraryEntry('bidayah-tongue-guard');
+  assert.ok(bidayaTongue, 'لم يتم العثور على حفظ اللسان من بداية الهداية');
+
+  const bidayaAllah = findLibraryEntry('bidayah-adab-allah');
+  assert.ok(bidayaAllah, 'لم يتم العثور على آداب الصحبة مع الله');
+
+  // تحقق من منازل أعمال القلوب للإمام ابن القيم
+  const heartYaqadha = findLibraryEntry('heart-yaqadha');
+  assert.ok(heartYaqadha, 'لم يتم العثور على منزلة اليقظة من الإكسير');
+  assert.equal(heartYaqadha.kind, 'heart');
+  assert.ok(heartYaqadha.source?.includes('الإكسير'));
+
+  const heartMahabbah = findLibraryEntry('heart-mahabbah');
+  assert.ok(heartMahabbah, 'لم يتم العثور على منزلة المحبة من الإكسير');
 });
 
 console.log('— سجلات اليوم —');

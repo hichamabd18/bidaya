@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {usePathname, useRouter} from 'next/navigation';
 import {CalendarDays, MapPin, Moon, BookOpen, Search, Settings, Sprout, Sun, Sunrise} from 'lucide-react';
 import {useApp} from '@/components/providers/AppProvider';
@@ -11,7 +12,7 @@ import {cn} from '@/lib/utils';
 export const NAV_ITEMS = [
   {href: '/', label: 'اليوم', icon: Sunrise},
   {href: '/seasons', label: 'المواسم', icon: CalendarDays},
-  {href: '/library', label: 'المكتبة', icon: BookOpen},
+  {href: '/library', label: 'الجامع', icon: BookOpen},
   {href: '/progress', label: 'تقدمي', icon: Sprout},
 ] as const;
 
@@ -102,11 +103,16 @@ export function Header() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         {/* السطر الأول: الهوية والتنقل والأدوات */}
         <div className="flex h-14 items-center justify-between gap-3">
-          <Link href="/" className="flex min-w-0 items-center gap-2" aria-label="اليوم النبوي — الرئيسية">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm border border-hairline bg-accent-soft text-accent-ink">
-              <Sunrise className="h-4.5 w-4.5" aria-hidden="true" />
-            </span>
-            <span className="truncate font-display text-[1.0625rem] font-bold leading-none">اليوم النبوي ووظائف العام</span>
+          <Link href="/" className="flex min-w-0 items-center gap-2.5" aria-label="بداية الهداية — الرئيسية">
+            <Image
+              src="/icons/icon-192.png"
+              alt="شعار بداية الهداية"
+              width={34}
+              height={34}
+              className="h-8.5 w-8.5 shrink-0 rounded-lg border border-hairline/80 object-cover shadow-xs"
+              priority
+            />
+            <span className="truncate font-display text-[1.125rem] font-bold leading-none">بداية الهداية</span>
           </Link>
 
           {/* تنقل سطح المكتب */}

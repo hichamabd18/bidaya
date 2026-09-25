@@ -71,3 +71,23 @@ export interface HabitItem {
   target: string;
   evaluation_criterion: string;
 }
+
+export interface BidayaItem {
+  id: string;
+  category: 'worship' | 'sins' | 'etiquette';
+  group: string;
+  title: string;
+  scripture?: string;
+  sections: { label: string; text: string }[];
+  source?: string;
+}
+
+export interface HeartStationItem {
+  id: string;
+  station_name: string;
+  group: string;
+  title: string;
+  scripture?: string;
+  sections: { label: string; text: string }[];
+  source?: string;
+}

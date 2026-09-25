@@ -110,7 +110,7 @@ export function SearchOverlay() {
           />
         )}
         {query.trim().length < 2 && (
-          <p className="px-5 py-8 text-center text-label text-ink-3">اكتب حرفين فأكثر — يبحث في كل أعمال اليوم والمواسم والمكتبة</p>
+          <p className="px-5 py-8 text-center text-label text-ink-3">اكتب حرفين فأكثر — يبحث في كل أعمال اليوم والمواسم والجامع</p>
         )}
         {results.map((entry) => (
           <button

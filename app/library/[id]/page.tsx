@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { findLibraryEntry, libraryEntries } from '@/lib/library';
 import { ScriptureBlock } from '@/components/ui/ScriptureBlock';
 import { ArticleActions } from '@/components/library/ArticleActions';
+import { BackButton } from '@/components/ui/BackButton';
 
 export function generateStaticParams() {
   return libraryEntries().map((entry) => ({ id: entry.id }));
@@ -26,16 +27,23 @@ export default async function LibraryArticlePage({ params }: { params: Promise<{
   const entry = findLibraryEntry(id);
   if (!entry) notFound();
 
+  const isMonth = entry.kind === 'month';
+  const parentHref = isMonth ? '/seasons' : '/library';
+  const parentLabel = isMonth ? 'المواسم' : 'الجامع';
+
   return (
-    <article className="mx-auto max-w-[42rem]">
-      {/* المسار */}
-      <p className="text-caption text-ink-3">
-        <Link href="/library" className="underline underline-offset-2 hover:text-accent-ink">
-          المكتبة
-        </Link>
-        <span aria-hidden="true"> ‹ </span>
-        <span>{entry.group}</span>
-      </p>
+    <article className="mx-auto max-w-[44rem] pb-16">
+      {/* شريط التنقل والعودة */}
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-hairline pb-3">
+        <BackButton fallbackHref={parentHref} label="رجوع" />
+        <nav aria-label="مسار التصفح" className="flex items-center gap-1.5 text-caption text-ink-3">
+          <Link href={parentHref} className="underline underline-offset-2 hover:text-accent-ink">
+            {parentLabel}
+          </Link>
+          <span aria-hidden="true"> ‹ </span>
+          <span className="max-w-[200px] truncate sm:max-w-none">{entry.group}</span>
+        </nav>
+      </div>
 
       <h1 className="mt-2 font-display text-headline font-bold leading-[1.5] text-ink">{entry.title}</h1>
 

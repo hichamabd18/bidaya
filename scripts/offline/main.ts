@@ -10,7 +10,12 @@ import {
 } from '../../lib/prayer';
 import {MODULE_1_DAILY_TIMELINE} from '../../lib/data/timeline';
 import {MODULE_2_HIJRI_SEASONS} from '../../lib/data/seasons';
-import {MODULE_3_CONTEXTUAL} from '../../lib/data/contextual';
+import {
+  libraryEntries,
+  findLibraryEntry,
+  libraryGroups,
+  entriesByGroup,
+} from '../../lib/library';
 import {
   AppSettings,
   ThemeName,
@@ -224,29 +229,36 @@ function seasonsView(): string {
   return `${months || '<p class="empty">لا نتائج</p>'}<h2 class="sec-label" style="margin-top:24px">فصول العام والاعتبار</h2>${seasons}`;
 }
 
-// ——— المكتبة ———
+// ——— الجامع (المكتبة) ———
 function libraryView(): string {
   const q = normalizeAr(filters.library);
-  const cats = MODULE_3_CONTEXTUAL.map((cat, ci) => {
-    const items = cat.items
-      .map((item, ii) => ({item, ii}))
-      .filter(({item}) => !q || normalizeAr(`${item.situation} ${item.sunnah_act} ${item.text} ${item.reward} ${item.source}`).includes(q));
-    if (q && items.length === 0) return '';
-    return `
+  const groups = libraryGroups().filter((g) => !g.name.startsWith('وظائف '));
+  const sections = groups
+    .map((g, gi) => {
+      const all = entriesByGroup(g.name);
+      const items = all.filter(
+        (entry) =>
+          !q ||
+          normalizeAr(
+            `${entry.title} ${entry.scripture ?? ''} ${entry.sections.map((s) => s.text).join(' ')} ${entry.source ?? ''}`,
+          ).includes(q),
+      );
+      if (q && items.length === 0) return '';
+      return `
       <section class="stage">
-        <button class="stage-head" data-cat="${ci}" aria-expanded="${expanded.has(`C${ci}`)}">
-          <span class="t"><b>${esc(cat.category_name)}</b><small>${cat.items.length} عمل وذكر</small></span>
+        <button class="stage-head" data-cat="${gi}" aria-expanded="${expanded.has(`C${gi}`)}">
+          <span class="t"><b>${esc(g.name)}</b><small>${items.length} موضوع</small></span>
           <span class="chev">${ICON_CHEVRON}</span>
         </button>
-        <div class="stage-body ${expanded.has(`C${ci}`) ? 'open' : ''}">
+        <div class="stage-body ${expanded.has(`C${gi}`) ? 'open' : ''}">
           <div class="panel">
             ${items
               .map(
-                ({item, ii}) => `
-              <button class="rowi" style="width:100%" data-ctx="${ci}-${ii}">
+                (entry) => `
+              <button class="rowi" style="width:100%" data-entry-id="${entry.id}">
                 <span class="body">
-                  <span class="ttl">${esc(item.situation)}</span>
-                  ${item.text ? `<span class="dhikr">« ${esc(item.text)} »</span>` : `<span class="desc">${esc(item.sunnah_act)}</span>`}
+                  <span class="ttl">${esc(entry.title)}</span>
+                  ${entry.scripture ? `<span class="dhikr">« ${esc(entry.scripture)} »</span>` : `<span class="desc">${esc(entry.sections[0]?.text.slice(0, 110) ?? '')}...</span>`}
                 </span>
               </button>`,
               )
@@ -254,8 +266,9 @@ function libraryView(): string {
           </div>
         </div>
       </section>`;
-  }).join('');
-  return cats || '<p class="empty">لا نتائج — جرّب كلمة أقصر</p>';
+    })
+    .join('');
+  return sections || '<p class="empty">لا نتائج — جرّب كلمة أقصر</p>';
 }
 
 // ——— المسبحة ———
@@ -328,23 +341,21 @@ function openMonthAct(key: string) {
   renderReader();
 }
 
-function openContextual(key: string) {
-  const [ci, ii] = key.split('-').map(Number);
-  const cat = MODULE_3_CONTEXTUAL[ci];
-  const item = cat?.items[ii];
-  if (!cat || !item) return;
+function openLibraryEntry(id: string) {
+  const item = findLibraryEntry(id);
+  if (!item) return;
   reader = {
-    title: item.situation,
-    group: cat.category_name,
-    scripture: item.text,
-    sections: [
-      {label: 'السنة العملية', text: item.sunnah_act},
-      {label: 'الفضل والأثر', text: item.reward},
-      {label: 'المقصد التربوي', text: item.spiritual_and_educational_facet},
-    ],
+    title: item.title,
+    group: item.group,
+    scripture: item.scripture,
+    sections: item.sections,
     source: item.source,
   };
   renderReader();
+}
+
+function openContextual(key: string) {
+  openLibraryEntry(`ctx-${key}`);
 }
 
 function renderReader() {
@@ -361,8 +372,7 @@ function renderReader() {
     ${reader.sections.map((s) => `<p class="sec-label">${esc(s.label)}</p><p class="sec-text">${esc(s.text)}</p>`).join('')}
     ${reader.source ? `<p class="src">الإسناد: ${esc(reader.source)}</p>` : ''}`;
   overlay.querySelector('.reader-actions')!.innerHTML = `
-    <button class="btn" id="reader-copy">${ICON_COPY} نسخ</button>
-    ${reader.scripture ? '<button class="btn primary" id="reader-tasbeeh">التسبيح بهذا الذكر</button>' : ''}`;
+    <button class="btn primary" id="reader-copy">${ICON_COPY} نسخ النص</button>`;
   overlay.classList.add('open');
 }
 
@@ -448,6 +458,11 @@ document.addEventListener('click', (e) => {
   const monthAct = hit('[data-month-act]');
   if (monthAct) {
     openMonthAct(monthAct.getAttribute('data-month-act')!);
+    return;
+  }
+  const entryBtn = hit('[data-entry-id]');
+  if (entryBtn) {
+    openLibraryEntry(entryBtn.getAttribute('data-entry-id')!);
     return;
   }
   const ctx = hit('[data-ctx]');

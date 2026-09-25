@@ -135,7 +135,7 @@ export function TodayView() {
   };
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="mx-auto max-w-3xl pb-16">
       {/* ——— رأس اليوم ——— */}
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
         <div>

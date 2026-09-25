@@ -10,3 +10,5 @@ export {
   HABIT_WEEKLY_MILESTONES,
   HABIT_MONTHLY_MILESTONES,
 } from './habits';
+export { MODULE_BIDAYA_ENTRIES } from './bidaya';
+export { MODULE_HEARTS_ENTRIES } from './hearts';

@@ -17,12 +17,12 @@ export function LibraryIndex() {
   const entries = useMemo(() => entriesByGroup(selected), [selected]);
 
   return (
-    <div>
+    <div className="pb-16">
       {/* رأس الصفحة */}
       <div className="mx-auto max-w-3xl">
-        <h1 className="font-display text-headline font-bold leading-tight text-ink">المكتبة</h1>
+        <h1 className="font-display text-headline font-bold leading-tight text-ink">الجامع</h1>
         <p className="mt-1 text-caption text-ink-3">
-          المناسبات والأحوال العارضة، وأصول سياسة النفس، وفقه الأذكار — موثقة بإسنادها
+          جامع الأذكار والسنن، وأصول سياسة النفس وتزكيتها، ومناسبات الأحوال — موثقة بإسنادها
         </p>
       </div>
 

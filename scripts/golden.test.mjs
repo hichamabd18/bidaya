@@ -64,6 +64,15 @@ check('العشاء 17° يسبق الفجر 18° بفارق منطقي (< 100 �
   const diff = minutesOf(t.fajr) + 24 * 60 - minutesOf(t.isha);
   assert.ok(diff < 24 * 60, `isha=${t.isha} fajr=${t.fajr}`);
 });
+check('صلاة العصر تقع عصرًا بين الظهر والمغرب (الجزائر العاصمة ~16:04 في أواخر سبتمبر)', () => {
+  const algiers = ALGERIAN_WILAYAS[15];
+  const t = calculatePrayerTimes(algiers, new Date(2026, 8, 25, 12, 0));
+  const asrM = minutesOf(t.asr);
+  const dhuhrM = minutesOf(t.dhuhr);
+  const maghribM = minutesOf(t.maghrib);
+  assert.ok(asrM > dhuhrM && asrM < maghribM, `العصر (${t.asr}) يجب أن يقع بين الظهر (${t.dhuhr}) والمغرب (${t.maghrib})`);
+  assert.ok(asrM >= 16 * 60 && asrM <= 16 * 60 + 15, `asr=${t.asr} (المتوقع ~16:04)`);
+});
 check('الصلاة القادمة و لحظتها في المستقبل دائمًا', () => {
   const algiers = ALGERIAN_WILAYAS[15];
   const t = calculatePrayerTimes(algiers, new Date());

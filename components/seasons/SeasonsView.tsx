@@ -22,7 +22,7 @@ export function SeasonsView() {
   const month = MODULE_2_HIJRI_SEASONS.months.find((m) => m.month_number === (selectedMonth ?? currentMonth ?? 1));
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="mx-auto max-w-3xl pb-16">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
         <div>
           <h1 className="font-display text-headline font-bold leading-tight text-ink">المواسم ووظائف العام</h1>

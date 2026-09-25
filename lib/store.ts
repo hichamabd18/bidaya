@@ -66,11 +66,14 @@ export function loadRawSettings(): AppSettings {
   const legacyTheme = typeof window !== 'undefined' ? window.localStorage.getItem('theme_dark_mode') : null;
   const legacyOffset = typeof window !== 'undefined' ? window.localStorage.getItem('hijri_offset_days') : null;
   const legacySound = typeof window !== 'undefined' ? window.localStorage.getItem('sound_enabled') : null;
+  const prefersDark = typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+  const defaultTheme: ThemeName = prefersDark ? 'night' : DEFAULT_SETTINGS.theme;
+
   return {
     ...DEFAULT_SETTINGS,
     ...raw,
     theme:
-      raw.theme ?? (legacyTheme !== null ? (legacyTheme === 'true' ? 'night' : 'day') : DEFAULT_SETTINGS.theme),
+      raw.theme ?? (legacyTheme !== null ? (legacyTheme === 'true' ? 'night' : 'day') : defaultTheme),
     hijriOffset: raw.hijriOffset ?? (legacyOffset !== null ? parseInt(legacyOffset, 10) || 0 : 0),
     sound: raw.sound ?? (legacySound !== null ? legacySound !== 'false' : true),
   };

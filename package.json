@@ -2,7 +2,7 @@
   "name": "bidaya",
   "version": "3.0.0",
   "private": true,
-  "description": "اليوم النبوي ووظائف العام — الدليل الشامل للاقتداء والتعبد وتزكية النفس",
+  "description": "بداية الهداية — الدليل الشامل للاقتداء والتعبد وتزكية النفس",
   "scripts": {
     "dev": "next dev -H 0.0.0.0",
     "prebuild": "node scripts/build-offline.mjs",

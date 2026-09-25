@@ -134,7 +134,7 @@ try {
   await check('offline.html كامل بلا مراجع خارجية', async () => {
     const {status, body} = await get('/offline.html');
     assert2(status === 200, `status=${status}`);
-    assert2(body.includes('اليوم النبوي'), 'عنوان مفقود');
+    assert2(body.includes('بداية الهداية'), 'عنوان مفقود');
     assert2(!/src=["']https?:/.test(body), 'سكربت خارجي!');
     assert2(!/href=["']https?:\/\//.test(body.replace(/xmlns="[^"]*"/g, '').replace(/rel="preconnect"[^>]*/g, '')), 'روابط خارجية!');
     assert2((body.match(/data:font\/woff2/g) || []).length === 3, 'الخطوط غير مضمّنة');

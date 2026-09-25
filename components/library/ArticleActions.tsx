@@ -1,15 +1,13 @@
 'use client';
 
 import React from 'react';
-import { Copy, Share2, Sparkles } from 'lucide-react';
-import { useApp } from '@/components/providers/AppProvider';
+import { Copy, Share2 } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
 import { copyText, shareDevotionalContent } from '@/lib/native';
 import type { LibraryEntry } from '@/lib/library';
 
-/** جزر تفاعل صفحة القراءة — نسخ ومشاركة وتسبيح */
+/** جزر تفاعل صفحة القراءة — نسخ ومشاركة */
 export function ArticleActions({ entry }: { entry: LibraryEntry }) {
-  const { openTasbeeh } = useApp();
   const { show } = useToast();
 
   const plainText = [
@@ -40,15 +38,9 @@ export function ArticleActions({ entry }: { entry: LibraryEntry }) {
 
   return (
     <div className="flex flex-wrap items-center gap-2 border-t border-hairline pt-4">
-      {entry.scripture && (
-        <button type="button" onClick={() => openTasbeeh({ text: entry.scripture!, title: entry.title })} className="btn btn--primary">
-          <Sparkles className="h-4 w-4" aria-hidden="true" />
-          التسبيح بهذا الذكر
-        </button>
-      )}
-      <button type="button" onClick={copy} className="btn">
+      <button type="button" onClick={copy} className="btn btn--primary">
         <Copy className="h-4 w-4" aria-hidden="true" />
-        نسخ
+        نسخ النص
       </button>
       <button type="button" onClick={share} className="btn">
         <Share2 className="h-4 w-4" aria-hidden="true" />

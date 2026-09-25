@@ -35,8 +35,8 @@ const html = `<!DOCTYPE html>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta name="theme-color" content="#f6f1e7"/>
-<meta name="description" content="اليوم النبوي ووظائف العام — نسخة مستقلة تعمل دون اتصال"/>
-<title>اليوم النبوي ووظائف العام — نسخة دون اتصال</title>
+<meta name="description" content="بداية الهداية — نسخة مستقلة تعمل دون اتصال"/>
+<title>بداية الهداية — نسخة دون اتصال</title>
 <link rel="icon" href="data:image/svg+xml;base64,${b64('public/icon.svg')}"/>
 <style>${css}</style>
 </head>
@@ -45,7 +45,7 @@ const html = `<!DOCTYPE html>
   <div class="row1">
     <div class="brand">
       <span class="brand-mark"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 7v14M3 12h18M8 3l4 4 4-4"/></svg></span>
-      <h1>اليوم النبوي ووظائف العام</h1>
+      <h1>بداية الهداية</h1>
     </div>
     <div style="display:flex;gap:6px;flex-shrink:0">
       <select id="loc-select" class="select-inline" aria-label="تحديد الموقع"></select>
@@ -75,7 +75,7 @@ const html = `<!DOCTYPE html>
 </div>
 
 <footer class="app-footer">
-  <b>اليوم النبوي ووظائف العام — نسخة مستقلة دون اتصال</b><br/>
+  <b>بداية الهداية — نسخة مستقلة دون اتصال</b><br/>
   المحتوى من: المنح العلية للفريح · مختصر لطائف المعارف لابن رجب · اليوم النبوي للطريري · أنيس المتعبد للأسطل · بداية الهداية للغزالي · الدعوات والأذكار للسعد<br/>
   مواقيت فلكية (الفجر 18°، العشاء 17°) بمعايرة رؤية ±يومين — تُحفظ بياناتك محليًا على جهازك
 </footer>
