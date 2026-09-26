@@ -57,18 +57,14 @@ export function LibraryIndex() {
 
   const [activeCategory, setActiveCategory] = useState<LibraryCategoryId>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedMonth, setSelectedMonth] = useState<number>(1);
+  const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(() => {
     // فتح الباب الأول تلقائيًا لتقديم فوري للمحتوى
     return new Set(['بداية الهداية: فقه الطاعات']);
   });
 
-  // مزامنة الشهر الهجري الحالي
-  useEffect(() => {
-    if (mounted && hijri.month) {
-      setSelectedMonth(hijri.month);
-    }
-  }, [mounted, hijri.month]);
+  // الشهر الفعال: المختار يدوياً أو الشهر الهجري الحالي
+  const activeMonthNumber = selectedMonth ?? (mounted && hijri.month ? hijri.month : 1);
 
   // فهرس المجموعات وأعداد المواد
   const allGroups = useMemo(() => libraryGroups(), []);
@@ -169,8 +165,8 @@ export function LibraryIndex() {
 
   // بيانات وظائف الشهر المحدد
   const activeMonthData = useMemo(() => {
-    return MODULE_2_HIJRI_SEASONS.months.find((m) => m.month_number === selectedMonth);
-  }, [selectedMonth]);
+    return MODULE_2_HIJRI_SEASONS.months.find((m) => m.month_number === activeMonthNumber);
+  }, [activeMonthNumber]);
 
   return (
     <div className="mx-auto max-w-3xl pb-20">
@@ -375,7 +371,7 @@ export function LibraryIndex() {
                       <div className="mt-2.5 grid grid-cols-3 gap-1.5 sm:grid-cols-4 md:grid-cols-6" role="radiogroup" aria-label="أشهر العام الهجري">
                         {MODULE_2_HIJRI_SEASONS.months.map((m) => {
                           const isCurrent = mounted && m.month_number === hijri.month;
-                          const isSelected = selectedMonth === m.month_number;
+                          const isSelected = activeMonthNumber === m.month_number;
                           const actsCount = m.acts_and_functions.length;
 
                           return (
