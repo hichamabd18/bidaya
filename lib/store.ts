@@ -43,7 +43,7 @@ function parseJSON<T>(raw: string | null, fallback: T): T {
 
 // ——— الإعدادات ———
 
-export type ThemeName = 'day' | 'night';
+export type ThemeName = 'day' | 'night' | 'ocean';
 
 export interface AppSettings {
   location: unknown; // Coordinates — يُرمَّم في coercion طبقة أعلى
@@ -73,7 +73,9 @@ export function loadRawSettings(): AppSettings {
     ...DEFAULT_SETTINGS,
     ...raw,
     theme:
-      raw.theme ?? (legacyTheme !== null ? (legacyTheme === 'true' ? 'night' : 'day') : defaultTheme),
+      raw.theme === 'ocean' || raw.theme === 'night' || raw.theme === 'day'
+        ? raw.theme
+        : (legacyTheme !== null ? (legacyTheme === 'true' ? 'night' : 'day') : defaultTheme),
     hijriOffset: raw.hijriOffset ?? (legacyOffset !== null ? parseInt(legacyOffset, 10) || 0 : 0),
     sound: raw.sound ?? (legacySound !== null ? legacySound !== 'false' : true),
   };

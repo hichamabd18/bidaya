@@ -28,7 +28,7 @@ export function BackButton({ fallbackHref = '/library', label = 'رجوع', clas
       type="button"
       onClick={handleBack}
       className={cn(
-        'inline-flex min-h-9 items-center gap-1.5 rounded-sm border border-hairline bg-surface px-3 py-1.5 text-label font-medium text-ink transition-colors hover:border-accent hover:text-accent-ink active:scale-95',
+        'inline-flex min-h-10 sm:min-h-9 items-center gap-1.5 rounded-sm border border-hairline bg-surface px-3 py-2 sm:py-1.5 text-label font-medium text-ink transition-colors hover:border-accent hover:text-accent-ink active:scale-95',
         className,
       )}
       aria-label={label}

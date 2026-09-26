@@ -47,7 +47,7 @@ export function ProgressView() {
     <div className="mx-auto max-w-3xl pb-16">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
         <h1 className="font-display text-headline font-bold leading-tight text-ink">صحيفتي</h1>
-        <button type="button" onClick={resetWithUndo} className="btn btn--ghost min-h-9! text-ink-3">
+        <button type="button" onClick={resetWithUndo} className="btn btn--ghost min-h-10 text-ink-3">
           <RotateCcw className="h-4 w-4" aria-hidden="true" />
           تصفير اليوم
         </button>

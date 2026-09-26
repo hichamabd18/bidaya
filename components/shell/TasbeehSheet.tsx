@@ -130,7 +130,7 @@ export function TasbeehSheet() {
                 }}
                 aria-pressed={target === t}
                 className={cn(
-                  'min-h-9 min-w-11 rounded-sm border px-2 text-label tabular-nums transition-colors',
+                  'min-h-10 min-w-11 rounded-sm border px-2 text-label tabular-nums transition-colors',
                   target === t
                     ? 'border-accent bg-accent-soft font-bold text-accent-ink'
                     : 'border-hairline text-ink-2 hover:border-accent',

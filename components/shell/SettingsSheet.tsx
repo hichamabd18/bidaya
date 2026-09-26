@@ -10,6 +10,7 @@ import { APP_METADATA } from '@/lib/data/meta';
 import { applyBackup, backupFileName, collectBackup } from '@/lib/backup';
 import { ALGERIAN_WILAYAS, MAJOR_ISLAMIC_CITIES } from '@/lib/prayer';
 import { normalizeAr } from '@/lib/search';
+import type { ThemeName } from '@/lib/store';
 import { cn } from '@/lib/utils';
 
 /** ورقة الإعدادات — صفوف قائمة لا صناديق متداخلة */
@@ -145,10 +146,10 @@ function RootView({
 }: {
   onOpenLocation: () => void;
   location: { name: string };
-  theme: 'day' | 'night';
+  theme: ThemeName;
   toggleTheme: () => void;
   sound: boolean;
-  updateSettings: (patch: { sound?: boolean; hijriOffset?: number }) => void;
+  updateSettings: (patch: { sound?: boolean; hijriOffset?: number; theme?: ThemeName }) => void;
   hijriOffset: number;
   locate: () => void;
   locating: boolean;
@@ -176,10 +177,11 @@ function RootView({
           options={[
             { value: 'day', label: 'نهاري' },
             { value: 'night', label: 'ليلي' },
+            { value: 'ocean', label: 'محيطي' },
           ]}
           value={theme}
           onChange={(v) => {
-            if (v !== theme) toggleTheme();
+            updateSettings({ theme: v as ThemeName });
           }}
         />
       </Row>

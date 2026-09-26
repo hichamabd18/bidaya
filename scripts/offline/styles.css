@@ -41,6 +41,27 @@
   --check-contrast: #2c3316;
   color-scheme: dark;
 }
+[data-theme='ocean'] {
+  --page: #def3f6;
+  --surface: #edf9fa;
+  --raised: #ffffff;
+  --ink-1: #064273;
+  --ink-2: #255c82;
+  --ink-3: #48789b;
+  --hairline: #bfe1e8;
+  --line-strong: #76b6c4;
+  --accent: #1da2d8;
+  --accent-strong: #0d7ea9;
+  --accent-soft: #c8edf5;
+  --accent-ink: #064273;
+  --success: #1b8a7f;
+  --success-soft: #d3f3f0;
+  --success-ink: #0e5b53;
+  --scrim: rgba(6, 66, 115, 0.52);
+  --check-fill: #1b8a7f;
+  --check-contrast: #ffffff;
+  color-scheme: light;
+}
 @font-face {
   font-family: 'Plex Arabic';
   src: url(data:font/woff2;base64,__PLEX400__) format('woff2');

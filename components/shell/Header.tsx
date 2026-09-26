@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {usePathname, useRouter} from 'next/navigation';
-import {CalendarDays, MapPin, Moon, BookOpen, Search, Settings, ScrollText, Sun, Sunrise} from 'lucide-react';
+import {CalendarDays, MapPin, Moon, BookOpen, Search, Settings, ScrollText, Sun, Sunrise, Waves} from 'lucide-react';
 import {useApp} from '@/components/providers/AppProvider';
 import {useNow} from '@/lib/useNow';
 import {cn} from '@/lib/utils';
@@ -109,7 +109,7 @@ export function Header() {
               alt="شعار بداية الهداية"
               width={34}
               height={34}
-              className="h-8.5 w-8.5 shrink-0 rounded-lg border border-hairline/80 object-cover shadow-xs"
+              className="h-8.5 w-8.5 shrink-0 rounded-md border border-hairline/80 object-contain p-0.5 shadow-xs bg-surface"
               priority
             />
             <span className="truncate font-display text-[1.125rem] font-bold leading-none">بداية الهداية</span>
@@ -144,10 +144,28 @@ export function Header() {
               type="button"
               onClick={toggleTheme}
               className="btn-icon"
-              aria-label={theme === 'night' ? 'الوضع النهاري' : 'الوضع الليلي'}
-              title={theme === 'night' ? 'ورق المخطوطة (نهاري)' : 'سماء هادئة (ليلي)'}
+              aria-label={
+                theme === 'night'
+                  ? 'المظهر المحيطي'
+                  : theme === 'ocean'
+                    ? 'المظهر النهاري'
+                    : 'المظهر الليلي'
+              }
+              title={
+                theme === 'night'
+                  ? 'سماء محيطية هادئة (محيطي)'
+                  : theme === 'ocean'
+                    ? 'ورق المخطوطة (نهاري)'
+                    : 'سماء هادئة (ليلي)'
+              }
             >
-              {theme === 'night' ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
+              {theme === 'night' ? (
+                <Waves aria-hidden="true" />
+              ) : theme === 'ocean' ? (
+                <Sun aria-hidden="true" />
+              ) : (
+                <Moon aria-hidden="true" />
+              )}
             </button>
             <button type="button" onClick={() => setSettingsOpen(true)} className="btn-icon" aria-label="الإعدادات" title="الإعدادات">
               <Settings aria-hidden="true" />
@@ -156,7 +174,7 @@ export function Header() {
         </div>
 
         {/* السطر الثاني: التاريخ والعدّاد */}
-        <div className="flex items-center justify-between gap-3 border-t border-hairline py-2">
+        <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-x-3 gap-y-1.5 border-t border-hairline py-2">
           <DateLine />
           <Countdown />
         </div>

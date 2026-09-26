@@ -79,19 +79,50 @@ html[data-theme='night'] {
   color-scheme: dark;
 }
 
+[data-theme='ocean'],
+html[data-theme='ocean'] {
+  --page: #def3f6;         /* (222,243,246) أرضية محيطية باردة ورائقة */
+  --surface: #edf9fa;      /* أسطح الألواح والبطاقات */
+  --raised: #ffffff;       /* العناصر المرفوعة */
+  --scrim: rgba(6, 66, 115, 0.52);
+
+  --ink-1: #064273;        /* (6,66,115) الحبر المحيطي العميق — تباين 9.8:1 */
+  --ink-2: #255c82;        /* حبر ثانوي هادئ 5.6:1 */
+  --ink-3: #48789b;        /* حبر توضيحي 4.5:1 */
+
+  --hairline: #bfe1e8;     /* فواصل ناعمة */
+  --line-strong: #76b6c4;  /* (118,182,196) حدود بارزة */
+
+  --accent: #1da2d8;        /* (29,162,216) أزرق محيطي حيوي للعلامات والأيقونات */
+  --accent-strong: #0d7ea9; /* زر تعبئة أساسي مع نص أبيض عالي التباين */
+  --accent-soft: #c8edf5;   /* خلفيات التبويبات والشرائح المختارة */
+  --accent-ink: #064273;    /* حبر التمييز */
+
+  --success: #1b8a7f;
+  --success-soft: #d3f3f0;
+  --success-ink: #0e5b53;
+  --danger: #b54a48;
+  --danger-soft: #fbebe9;
+
+  --check-fill: #1b8a7f;
+  --check-contrast: #ffffff;
+
+  color-scheme: light;
+}
+
 /* ============================================================
    «فجر» — لَون الصفحة يتبع محطة اليوم (الأسطح ثابتة)
-   يُطبَّق تلوين النهار فقط عندما لا يكون الوضع الليلي مفعّلاً
+   يُطبَّق تلوين النهار فقط عندما لا يكون الوضع الليلي أو المحيطي مفعّلاً
    ============================================================ */
 
-html:not([data-theme='night'])[data-daypart='dawn']       { --page: #f1efe9; }
-html:not([data-theme='night'])[data-daypart='morning']    { --page: #f7f3e9; }
-html:not([data-theme='night'])[data-daypart='noon']       { --page: #f6f1e7; }
-html:not([data-theme='night'])[data-daypart='afternoon']  { --page: #f5eedd; }
-html:not([data-theme='night'])[data-daypart='dusk']       { --page: #f2ebdc; }
-html:not([data-theme='night'])[data-daypart='evening']    { --page: #efebdf; }
-html:not([data-theme='night'])[data-daypart='night'],
-html:not([data-theme='night'])[data-daypart='late']       { --page: #ece9dd; }
+html:not([data-theme='night']):not([data-theme='ocean'])[data-daypart='dawn']       { --page: #f1efe9; }
+html:not([data-theme='night']):not([data-theme='ocean'])[data-daypart='morning']    { --page: #f7f3e9; }
+html:not([data-theme='night']):not([data-theme='ocean'])[data-daypart='noon']       { --page: #f6f1e7; }
+html:not([data-theme='night']):not([data-theme='ocean'])[data-daypart='afternoon']  { --page: #f5eedd; }
+html:not([data-theme='night']):not([data-theme='ocean'])[data-daypart='dusk']       { --page: #f2ebdc; }
+html:not([data-theme='night']):not([data-theme='ocean'])[data-daypart='evening']    { --page: #efebdf; }
+html:not([data-theme='night']):not([data-theme='ocean'])[data-daypart='night'],
+html:not([data-theme='night']):not([data-theme='ocean'])[data-daypart='late']       { --page: #ece9dd; }
 
 /* درجات ليلية هادئة متباينة حسب المحطة — لا تعود أبدًا للون الفاتح */
 html[data-theme='night']                                 { --page: #12161d; }
@@ -247,6 +278,11 @@ html[data-theme='night'][data-daypart='late']            { --page: #0f1319; }
   }
   [data-theme='night'] .btn--primary:hover {
     color: #241b09;
+  }
+  [data-theme='ocean'] .btn--primary:hover {
+    background: #064273;
+    border-color: #064273;
+    color: #ffffff;
   }
 
   .btn--ghost {

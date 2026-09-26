@@ -138,3 +138,97 @@ export function libraryGroups(): { name: string; count: number }[] {
 export function entriesByGroup(group: string): LibraryEntry[] {
   return libraryEntries().filter((entry) => entry.group === group);
 }
+
+export type LibraryCategoryId = 'all' | 'bidaya' | 'hearts' | 'contextual' | 'seasons';
+
+export interface LibraryCategoryDef {
+  id: Exclude<LibraryCategoryId, 'all'>;
+  title: string;
+  shortTitle: string;
+  badge: string;
+  description: string;
+  groupNames: string[];
+}
+
+export const LIBRARY_CATEGORIES: LibraryCategoryDef[] = [
+  {
+    id: 'bidaya',
+    title: 'بداية الهداية',
+    shortTitle: 'بداية الهداية',
+    badge: 'الإمام الغزالي',
+    description: 'فقه الطاعات واجتناب المعاصي والآداب والمعاشرة مع الخلق',
+    groupNames: [
+      'بداية الهداية: فقه الطاعات',
+      'بداية الهداية: اجتناب المعاصي',
+      'بداية الهداية: الآداب والمعاشرة',
+    ],
+  },
+  {
+    id: 'hearts',
+    title: 'أعمال القلوب والتزكية',
+    shortTitle: 'القلوب والتزكية',
+    badge: 'ابن القيم وأئمة السلوك',
+    description: 'منازل السائرين من الإكسير وأصول سياسة النفس وفقه الأذكار',
+    groupNames: [
+      'أعمال القلوب ومنازل السائرين',
+      'أصول سياسة النفس',
+      'فقه الأذكار',
+    ],
+  },
+  {
+    id: 'contextual',
+    title: 'السنن والأذكار السياقية',
+    shortTitle: 'السنن السياقية',
+    badge: 'سنن الأحوال',
+    description: 'سنن النبي ﷺ وأذكاره في تقلبات المعاش والسفر والمعاملات والكرب',
+    groupNames: [
+      'آداب المعاملات واللقاء والمجالسة',
+      'الكرب والهموم والديون والأحوال النفسية',
+      'آداب السفر والتنقل والمواضع',
+      'سنن يومية عامة وآداب العبادة',
+      'سنن اللباس والزينة واستعمال الطيب',
+      'الرقى والطب النبوي وعيادة المريض والجنائز',
+      'الآيات الكونية والظواهر البيئية',
+    ],
+  },
+  {
+    id: 'seasons',
+    title: 'وظائف شهور العام',
+    shortTitle: 'وظائف الشهور',
+    badge: 'ابن رجب الحنبلي',
+    description: 'وظائف المواسم والشهور الهجرية وأعمالها التعبدية المستخلصة من لطائف المعارف',
+    groupNames: [
+      'وظائف المحرم',
+      'وظائف صفر',
+      'وظائف ربيع الأول',
+      'وظائف ربيع الآخر',
+      'وظائف جمادى الأولى',
+      'وظائف جمادى الآخرة',
+      'وظائف رجب',
+      'وظائف شعبان',
+      'وظائف رمضان',
+      'وظائف شوال',
+      'وظائف ذو القعدة',
+      'وظائف ذو الحجة',
+    ],
+  },
+];
+
+export function cleanGroupTitle(groupName: string): string {
+  if (groupName.startsWith('بداية الهداية: ')) {
+    return groupName.replace('بداية الهداية: ', '');
+  }
+  if (groupName.startsWith('وظائف ')) {
+    return groupName.replace('وظائف ', '');
+  }
+  return groupName;
+}
+
+export function groupUnitLabel(groupName: string, count: number): string {
+  if (groupName.includes('أعمال القلوب')) return count === 1 ? 'منزلة واحدة' : count === 2 ? 'منزلتان' : count <= 10 ? `${count} منازل` : `${count} منزلة`;
+  if (groupName.includes('سياسة النفس') || groupName.includes('فقه الأذكار')) return count === 1 ? 'قاعدة واحدة' : count === 2 ? 'قاعدتان' : count <= 10 ? `${count} قواعد` : `${count} قاعدة`;
+  if (groupName.startsWith('وظائف ')) return count === 1 ? 'وظيفة واحدة' : count === 2 ? 'وظيفتان' : count <= 10 ? `${count} وظائف` : `${count} وظيفة`;
+  if (groupName.includes('سنن') || groupName.includes('آداب') || groupName.includes('الكرب')) return count === 1 ? 'سنة واحدة' : count === 2 ? 'سنتان' : count <= 10 ? `${count} سنن` : `${count} سنة`;
+  return count === 1 ? 'موضوع واحد' : count === 2 ? 'موضوعان' : count <= 10 ? `${count} مواضيع` : `${count} موضوعاً`;
+}
+

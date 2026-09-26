@@ -74,7 +74,7 @@ export const viewport: Viewport = {
 /**
  * يُطبَّع المظهر قبل الترطيب — لا وميض أبيض لمستخدم الوضع الليلي.
  */
-const THEME_BOOT = `(function(){try{var s=localStorage.getItem('bidaya.v1:settings');var t=s?JSON.parse(s).theme:null;if(!t){t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'night':'day';}if(t==='night'){document.documentElement.setAttribute('data-theme','night');}else{document.documentElement.removeAttribute('data-theme');}document.documentElement.style.colorScheme=t==='night'?'dark':'light';}catch(e){}})();`;
+const THEME_BOOT = `(function(){try{var s=localStorage.getItem('bidaya.v1:settings');var t=s?JSON.parse(s).theme:null;if(!t){t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'night':'day';}if(t==='night'){document.documentElement.setAttribute('data-theme','night');}else if(t==='ocean'){document.documentElement.setAttribute('data-theme','ocean');}else{document.documentElement.removeAttribute('data-theme');}document.documentElement.style.colorScheme=t==='night'?'dark':'light';}catch(e){}})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

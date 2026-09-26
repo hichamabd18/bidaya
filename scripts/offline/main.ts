@@ -41,6 +41,7 @@ const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" s
 const ICON_CHEVRON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="18" height="18"><path d="m6 9 6 6 6-6"/></svg>';
 const ICON_MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="18" height="18"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
 const ICON_SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="18" height="18"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+const ICON_WAVES = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="18" height="18"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>';
 const ICON_COPY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>';
 
 // ——— الحالة ———
@@ -76,6 +77,7 @@ function persistSettings() {
 function applyTheme() {
   const root = document.documentElement;
   if (settings.theme === 'night') root.setAttribute('data-theme', 'night');
+  else if (settings.theme === 'ocean') root.setAttribute('data-theme', 'ocean');
   else root.removeAttribute('data-theme');
 }
 
@@ -110,7 +112,8 @@ function renderHeader() {
     `${esc(hijri.formattedText)}<small>${esc(formatConciseGregorian(now))}</small> ${badges}`;
   header.querySelector('.countdown')!.innerHTML =
     `<span class="dot"></span><strong>${esc(prayer.nextPrayer)}</strong><span class="num">بعد ${countdown}</span>`;
-  header.querySelector('#theme-btn')!.innerHTML = settings.theme === 'night' ? ICON_SUN : ICON_MOON;
+  header.querySelector('#theme-btn')!.innerHTML =
+    settings.theme === 'night' ? ICON_SUN : settings.theme === 'ocean' ? ICON_MOON : ICON_WAVES;
   header.querySelector('#loc-select')!.innerHTML = options;
   header.querySelector('#loc-label')!.textContent = location.name;
 }
@@ -403,7 +406,8 @@ document.addEventListener('click', (e) => {
 
   const themeBtn = hit('#theme-btn');
   if (themeBtn) {
-    settings = {...settings, theme: (settings.theme === 'night' ? 'day' : 'night') as ThemeName};
+    const cycle: Record<ThemeName, ThemeName> = {day: 'ocean', ocean: 'night', night: 'day'};
+    settings = {...settings, theme: cycle[settings.theme] ?? 'day'};
     persistSettings();
     applyTheme();
     renderHeader();

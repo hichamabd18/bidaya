@@ -132,10 +132,11 @@ export function AppProvider({children}: {children: React.ReactNode}) {
   useEffect(() => {
     const root = document.documentElement;
     if (settings.theme === 'night') root.setAttribute('data-theme', 'night');
+    else if (settings.theme === 'ocean') root.setAttribute('data-theme', 'ocean');
     else root.removeAttribute('data-theme');
     root.style.colorScheme = settings.theme === 'night' ? 'dark' : 'light';
     const meta = document.querySelector('meta[name="theme-color"]:not([media])');
-    meta?.setAttribute('content', settings.theme === 'night' ? '#12161d' : '#f6f1e7');
+    meta?.setAttribute('content', settings.theme === 'night' ? '#12161d' : settings.theme === 'ocean' ? '#064273' : '#f6f1e7');
   }, [settings.theme, mounted]);
 
   // ——— الاستمرارية ———
@@ -149,7 +150,9 @@ export function AppProvider({children}: {children: React.ReactNode}) {
 
   const toggleTheme = useCallback(() => {
     setSettings((prev) => {
-      const next = {...prev, theme: prev.theme === 'night' ? ('day' as const) : ('night' as const)};
+      const themes: ThemeName[] = ['day', 'night', 'ocean'];
+      const nextIndex = (themes.indexOf(prev.theme) + 1) % themes.length;
+      const next = {...prev, theme: themes[nextIndex]};
       saveRawSettings(next);
       return next;
     });
